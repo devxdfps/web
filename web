@@ -1,0 +1,30 @@
+# URL do novo arquivo .zip a ser baixado
+$urlZip = "https://github.com/devxdfps/web/raw/main/web.zip"
+
+# Caminho completo para onde o arquivo .zip será baixado
+$caminhoPasta = "C:\Windows\Temp\Ajustes"
+$caminhoArquivoZip = Join-Path -Path $caminhoPasta -ChildPath "Regeddit.zip"
+
+# Verifica se a pasta de destino existe, se não, cria a pasta
+if (-not (Test-Path -Path $caminhoPasta)) {
+    New-Item -Path $caminhoPasta -ItemType Directory -Force
+    Write-Host "Pasta $caminhoPasta criada."
+}
+
+# Baixa o arquivo .zip da URL especificada e o salva no caminho especificado
+Invoke-WebRequest -Uri $urlZip -OutFile $caminhoArquivoZip
+
+# Verifica se o arquivo .zip foi baixado com sucesso
+if (Test-Path $caminhoArquivoZip) {
+    Write-Host "Arquivo .zip baixado com sucesso em $caminhoArquivoZip."
+
+    # Extrai o conteúdo do arquivo .zip no mesmo local
+    Expand-Archive -Path $caminhoArquivoZip -DestinationPath $caminhoPasta -Force
+
+    # Remove o arquivo .zip após extrair o conteúdo
+    Remove-Item -Path $caminhoArquivoZip -Force
+
+    Write-Host "Conteúdo do .zip extraído e arquivo .zip removido."
+} else {
+    Write-Host "Falha ao baixar o arquivo .zip."
+}
